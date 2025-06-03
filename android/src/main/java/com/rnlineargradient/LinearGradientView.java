@@ -139,27 +139,10 @@ public class LinearGradientView extends View {
     public void setColors(ReadableArray colors) {
         int[] _colors = new int[colors.size()];
         for (int i = 0; i < _colors.length; i++) {
-            switch (colors.getType(i)) {
-                case Map:
-                    _colors[i] = ColorPropConverter.getColor(colors.getMap(i), getContext());
-                    break;
-                case Number:
-                    _colors[i] = colors.getInt(i);
-                    break;
-                case String:
-                    // 手动解析字符串颜色值
-                    try {
-                        String colorString = colors.getString(i);
-                        _colors[i] = android.graphics.Color.parseColor(colorString);
-                    } catch (IllegalArgumentException e) {
-                        // 如果解析失败，使用默认颜色
-                        _colors[i] = android.graphics.Color.TRANSPARENT;
-                    }
-                    break;
-                default:
-                    _colors[i] = android.graphics.Color.TRANSPARENT;
-                    break;
-            }
+            _colors[i] =
+                    colors.getType(i) == ReadableType.Map
+                            ? ColorPropConverter.getColor(colors.getMap(i), getContext())
+                            : colors.getInt(i);
         }
         mColors = _colors;
         drawGradient();
